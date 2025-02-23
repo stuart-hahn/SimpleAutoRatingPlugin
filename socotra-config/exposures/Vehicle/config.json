@@ -3,7 +3,8 @@
         "BodilyInjury",
         "PropertyDamage",
         "Collision?",
-        "Comprehensive?"
+        "Comprehensive?",
+        "UninsuredMotorist?"
     ],
     "data": {
         "vehicleType": {
