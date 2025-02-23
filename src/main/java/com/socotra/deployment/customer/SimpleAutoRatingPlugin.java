@@ -334,16 +334,16 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
      * @return The highest driver age factor.
      */
     private double lookupHighestDriverAgeFactor(SimpleAuto policy) {
-        double highestFactor = 0.0;
+        double highestDriverAgeFactor = 2.5;
 
         // Loop through all drivers to find the maximum age factor
         for (Driver driver : policy.drivers()) {
             int age = calculateAge(driver);
             double factor = getDriverAgeFactor(age);
-            highestFactor = Math.max(highestFactor, factor);
+            highestDriverAgeFactor = Math.min(highestDriverAgeFactor, factor);
         }
 
-        return highestFactor;
+        return highestDriverAgeFactor;
     }
 
     /**
