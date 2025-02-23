@@ -78,9 +78,12 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
             coverageRates.add(this.rateCollision(vehicle, vehicle.collision(), policy));
         }
         // TODO: Implement rateComprehensive() when applicable
-
         if (vehicle.comprehensive() != null) {
             coverageRates.add(this.rateComprehensive(vehicle, vehicle.comprehensive(), policy));
+        }
+
+        if (vehicle.uninsuredMotorist() != null) {
+            coverageRates.add(this.rateUninsuredMotorist(vehicle, vehicle.uninsuredMotorist(), policy));
         }
 
         logger.info("rateVehicleCoverages rates={}", coverageRates);
@@ -165,10 +168,18 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
     private RatingItem rateComprehensive(Vehicle vehicle, Comprehensive coverage, SimpleAuto policy) {
         // TODO: Implement rateComprehensive() with above formula
 //        throw new RuntimeException("Not implemented!");
+        if (coverage == null) {
+            logger.warn("rateComprehensive called with null coverage for vehicle: {}", vehicle);
+            return null;
+        }
 
-        double rate = this.lookupBaseRate(vehicle)
-                * this.lookupHighestDriverAgeFactor(policy)
-                * this.lookupDeductibleFactor(coverage.deductible());
+        logger.info("Calculating Comprehensive rate for vehicle={} with coverage={}", vehicle, coverage);
+
+        double baseRate = this.lookupBaseRate(vehicle);
+        double driverAgeFactor = this.lookupHighestDriverAgeFactor(policy);
+        double deductibleFactor = this.lookupDeductibleFactor(coverage.deductible());
+
+        double rate = baseRate * driverAgeFactor * deductibleFactor;
 
         RatingItem ratingItem = RatingItem.builder()
                 .elementLocator(coverage.locator())
@@ -179,7 +190,34 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
         return ratingItem;
     }
 
+    /**
+     * Calculate rate for UninsuredMotorist coverage as
+     * = BaseRate * DriverAgeFactor * LimitFactor * DeductibleFactor
+     */
+    private RatingItem rateUninsuredMotorist(Vehicle vehicle, UninsuredMotorist coverage, SimpleAuto policy) {
+        if (coverage == null) {
+            logger.warn("rateUninsuredMotorist called with null coverage for vehicle: {}", vehicle);
+            return null;
+        }
 
+        logger.info("Calculating UninsuredMotorist rate for vehicle={} with coverage={}", vehicle, coverage);
+
+        double baseRate = this.lookupBaseRate(vehicle);
+        double driverAgeFactor = this.lookupHighestDriverAgeFactor(policy);
+        double limitFactor = this.lookupLimitFactor(coverage.limit());
+        double deductibleFactor = this.lookupDeductibleFactor(coverage.deductible());
+
+        double rate = baseRate * driverAgeFactor * limitFactor * deductibleFactor;
+
+        RatingItem ratingItem = RatingItem.builder()
+                .elementLocator(coverage.locator())
+                .chargeType(ChargeType.premium)
+                .rate(new BigDecimal(rate))
+                .build();
+
+        logger.info("Generated UninsuredMotorist RatingItem: {}", ratingItem);
+        return ratingItem;
+    }
 
 /**
  * LOOKUP TABLES:
