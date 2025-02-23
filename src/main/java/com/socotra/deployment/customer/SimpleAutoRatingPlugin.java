@@ -79,6 +79,10 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
         }
         // TODO: Implement rateComprehensive() when applicable
 
+        if (vehicle.comprehensive() != null) {
+            coverageRates.add(this.rateComprehensive(vehicle, vehicle.comprehensive(), policy));
+        }
+
         logger.info("rateVehicleCoverages rates={}", coverageRates);
         return coverageRates;
     }
@@ -158,9 +162,21 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
      * Calculate rate for Comprehensive coverage as
      * = BaseRate * DriverAgeFactor * DeductibleFactor
      */
-    private RatingItem rateComprehensive() {
+    private RatingItem rateComprehensive(Vehicle vehicle, Comprehensive coverage, SimpleAuto policy) {
         // TODO: Implement rateComprehensive() with above formula
-        throw new RuntimeException("Not implemented!");
+//        throw new RuntimeException("Not implemented!");
+
+        double rate = this.lookupBaseRate(vehicle)
+                * this.lookupHighestDriverAgeFactor(policy)
+                * this.lookupDeductibleFactor(coverage.deductible());
+
+        RatingItem ratingItem = RatingItem.builder()
+                .elementLocator(coverage.locator())
+                .chargeType(ChargeType.premium)
+                .rate(new BigDecimal(rate))
+                .build();
+
+        return ratingItem;
     }
 
 
