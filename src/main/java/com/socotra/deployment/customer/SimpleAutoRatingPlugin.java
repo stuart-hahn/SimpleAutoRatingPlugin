@@ -30,9 +30,9 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
         logger.info("quote={}", quote);
 
         RatingSet ratingSet = RatingSet.builder()
-            .ok(true)
-            .addRatingItems(this.rateVehicles(quote))
-            .build();
+                .ok(true)
+                .addRatingItems(this.rateVehicles(quote))
+                .build();
 
         logger.info("ratingSet={}", ratingSet);
         return ratingSet;
@@ -51,17 +51,16 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
      * @return A list of RatingItem objects for each vehicle's coverages.
      */
     private List<RatingItem> rateVehicles(SimpleAuto policy) {
-        logger.info("rateVehicles vehicles={}", policy.vehicles());
+        logger.info("Entering rateVehicles with policy containing {} vehicles", policy.vehicles().size());
 
-        // List to hold all rating items from all vehicles
         List<RatingItem> allVehicleRates = new ArrayList<>();
 
-        // Iterate over each vehicle and accumulate its coverage ratings
         for (Vehicle vehicle : policy.vehicles()) {
+            logger.info("Processing vehicle: {}", vehicle);
             allVehicleRates.addAll(rateVehicleCoverages(vehicle, policy));
         }
 
-        logger.info("rateVehicles rates={}", allVehicleRates);
+        logger.info("Exiting rateVehicles with {} rating items", allVehicleRates.size());
         return allVehicleRates;
     }
 
@@ -73,34 +72,28 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
      * @return A list of RatingItem objects representing the vehicle's coverages.
      */
     private List<RatingItem> rateVehicleCoverages(Vehicle vehicle, SimpleAuto policy) {
-        logger.info("rateVehicleCoverages vehicle={}", vehicle);
+        logger.info("Entering rateVehicleCoverages for vehicle: {}", vehicle);
 
-        // List to hold rating items for each coverage on the vehicle
         List<RatingItem> coverageRates = new ArrayList<>();
 
-        // Required Coverages: Bodily Injury and Property Damage
         coverageRates.add(this.rateBodilyInjury(vehicle, vehicle.bodilyInjury(), policy));
         coverageRates.add(this.ratePropertyDamage(vehicle, vehicle.propertyDamage(), policy));
 
-        // Optional Coverage: Collision
         if (vehicle.collision() != null) {
             coverageRates.add(this.rateCollision(vehicle, vehicle.collision(), policy));
         }
 
-        // Optional Coverage: Comprehensive
         if (vehicle.comprehensive() != null) {
             coverageRates.add(this.rateComprehensive(vehicle, vehicle.comprehensive(), policy));
         }
 
-        // Optional Coverage: Uninsured Motorist
         if (vehicle.uninsuredMotorist() != null) {
             coverageRates.add(this.rateUninsuredMotorist(vehicle, vehicle.uninsuredMotorist(), policy));
         }
 
-        logger.info("rateVehicleCoverages rates={}", coverageRates);
+        logger.info("Exiting rateVehicleCoverages with {} rating items", coverageRates.size());
         return coverageRates;
     }
-
 
     // =============================
     // COVERAGE RATING METHODS
@@ -124,21 +117,21 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
      * @return A RatingItem for the Bodily Injury coverage.
      */
     private RatingItem rateBodilyInjury(Vehicle vehicle, BodilyInjury coverage, SimpleAuto policy) {
-        logger.info("rateBodilyInjury coverage={}", coverage);
+        logger.info("Entering rateBodilyInjury for vehicle={} with coverage={}", vehicle, coverage);
 
-        double rate = this.lookupBaseRate(vehicle)
-            * this.lookupHighestDriverAgeFactor(policy)
-            * this.lookupLimitFactor(coverage.limit());
+        double baseRate = this.lookupBaseRate(vehicle);
+        double driverFactor = this.lookupHighestDriverAgeFactor(policy);
+        double limitFactor = this.lookupLimitFactor(coverage.limit());
 
-        rate /= 12;
+        double rate = (baseRate * driverFactor * limitFactor) / 12;
 
         RatingItem ratingItem = RatingItem.builder()
-            .elementLocator(coverage.locator())
-            .chargeType(ChargeType.premium)
-            .rate(new BigDecimal(rate))
-            .build();
+                .elementLocator(coverage.locator())
+                .chargeType(ChargeType.premium)
+                .rate(new BigDecimal(rate))
+                .build();
 
-        logger.info("ratingItem={}", ratingItem);
+        logger.info("Exiting rateBodilyInjury with calculated rate: {}", rate);
         return ratingItem;
     }
 
@@ -152,21 +145,21 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
      * @return A RatingItem for the Property Damage coverage.
      */
     private RatingItem ratePropertyDamage(Vehicle vehicle, PropertyDamage coverage, SimpleAuto policy) {
-        logger.info("ratePropertyDamage coverage={}", coverage);
+        logger.info("Entering ratePropertyDamage for vehicle={} with coverage={}", vehicle, coverage);
 
-        double rate = this.lookupBaseRate(vehicle)
-            * this.lookupHighestDriverAgeFactor(policy)
-            * this.lookupLimitFactor(coverage.limit());
+        double baseRate = this.lookupBaseRate(vehicle);
+        double driverFactor = this.lookupHighestDriverAgeFactor(policy);
+        double limitFactor = this.lookupLimitFactor(coverage.limit());
 
-        rate /= 12;
+        double rate = (baseRate * driverFactor * limitFactor) / 12;
 
         RatingItem ratingItem = RatingItem.builder()
-            .elementLocator(coverage.locator())
-            .chargeType(ChargeType.premium)
-            .rate(new BigDecimal(rate))
-            .build();
+                .elementLocator(coverage.locator())
+                .chargeType(ChargeType.premium)
+                .rate(new BigDecimal(rate))
+                .build();
 
-        logger.info("ratingItem={}", ratingItem);
+        logger.info("Exiting ratePropertyDamage with calculated rate: {}", rate);
         return ratingItem;
     }
 
@@ -180,21 +173,21 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
      * @return A RatingItem for the Collision coverage.
      */
     private RatingItem rateCollision(Vehicle vehicle, Collision coverage, SimpleAuto policy) {
-        logger.info("rateCollision coverage={}", coverage);
+        logger.info("Entering rateCollision for vehicle={} with coverage={}", vehicle, coverage);
 
-        double rate = this.lookupBaseRate(vehicle)
-            * this.lookupHighestDriverAgeFactor(policy)
-            * this.lookupDeductibleFactor(coverage.deductible());
+        double baseRate = this.lookupBaseRate(vehicle);
+        double driverFactor = this.lookupHighestDriverAgeFactor(policy);
+        double deductibleFactor = this.lookupDeductibleFactor(coverage.deductible());
 
-        rate /= 12;
+        double rate = (baseRate * driverFactor * deductibleFactor) / 12;
 
         RatingItem ratingItem = RatingItem.builder()
-            .elementLocator(coverage.locator())
-            .chargeType(ChargeType.premium)
-            .rate(new BigDecimal(rate))
-            .build();
+                .elementLocator(coverage.locator())
+                .chargeType(ChargeType.premium)
+                .rate(new BigDecimal(rate))
+                .build();
 
-        logger.info("ratingItem={}", ratingItem);
+        logger.info("Exiting rateCollision with calculated rate: {}", rate);
         return ratingItem;
     }
 
@@ -208,21 +201,18 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
      * @return A RatingItem for the Comprehensive coverage, or null if coverage is null.
      */
     private RatingItem rateComprehensive(Vehicle vehicle, Comprehensive coverage, SimpleAuto policy) {
-        // If the coverage is null, log a warning and return null.
         if (coverage == null) {
             logger.warn("rateComprehensive called with null coverage for vehicle: {}", vehicle);
             return null;
         }
 
-        logger.info("Calculating Comprehensive rate for vehicle={} with coverage={}", vehicle, coverage);
+        logger.info("Entering rateComprehensive for vehicle={} with coverage={}", vehicle, coverage);
 
         double baseRate = this.lookupBaseRate(vehicle);
-        double driverAgeFactor = this.lookupHighestDriverAgeFactor(policy);
+        double driverFactor = this.lookupHighestDriverAgeFactor(policy);
         double deductibleFactor = this.lookupDeductibleFactor(coverage.deductible());
 
-        double rate = baseRate * driverAgeFactor * deductibleFactor;
-
-        rate /= 12;
+        double rate = (baseRate * driverFactor * deductibleFactor) / 12;
 
         RatingItem ratingItem = RatingItem.builder()
                 .elementLocator(coverage.locator())
@@ -230,6 +220,7 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
                 .rate(new BigDecimal(rate))
                 .build();
 
+        logger.info("Exiting rateComprehensive with calculated rate: {}", rate);
         return ratingItem;
     }
 
@@ -243,22 +234,19 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
      * @return A RatingItem for the Uninsured Motorist coverage, or null if coverage is null.
      */
     private RatingItem rateUninsuredMotorist(Vehicle vehicle, UninsuredMotorist coverage, SimpleAuto policy) {
-        // If the coverage is null, log a warning and return null.
         if (coverage == null) {
             logger.warn("rateUninsuredMotorist called with null coverage for vehicle: {}", vehicle);
             return null;
         }
 
-        logger.info("Calculating UninsuredMotorist rate for vehicle={} with coverage={}", vehicle, coverage);
+        logger.info("Entering rateUninsuredMotorist for vehicle={} with coverage={}", vehicle, coverage);
 
         double baseRate = this.lookupBaseRate(vehicle);
-        double driverAgeFactor = this.lookupHighestDriverAgeFactor(policy);
+        double driverFactor = this.lookupHighestDriverAgeFactor(policy);
         double limitFactor = this.lookupLimitFactor(coverage.limit());
         double deductibleFactor = this.lookupDeductibleFactor(coverage.deductible());
 
-        double rate = baseRate * driverAgeFactor * limitFactor * deductibleFactor;
-
-        rate /= 12;
+        double rate = (baseRate * driverFactor * limitFactor * deductibleFactor) / 12;
 
         RatingItem ratingItem = RatingItem.builder()
                 .elementLocator(coverage.locator())
@@ -266,10 +254,9 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
                 .rate(new BigDecimal(rate))
                 .build();
 
-        logger.info("Generated UninsuredMotorist RatingItem: {}", ratingItem);
+        logger.info("Exiting rateUninsuredMotorist with calculated rate: {}", rate);
         return ratingItem;
     }
-
 
     // =============================
     // LOOKUP TABLE METHODS
@@ -286,9 +273,12 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
             case "Motorcycle" -> 300.0;
             case "Car" -> 500.0;
             case "Truck" -> 750.0;
-            default -> throw new RuntimeException("lookupBaseRate failed!");
+            default -> {
+                logger.error("lookupBaseRate failed for vehicleType={}", vehicle.data().vehicleType());
+                throw new RuntimeException("lookupBaseRate failed!");
+            }
         };
-        logger.info("lookupBaseRate baseRate={}", baseRate);
+        logger.info("lookupBaseRate for vehicleType={} returned {}", vehicle.data().vehicleType(), baseRate);
         return baseRate;
     }
 
@@ -299,15 +289,21 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
      * @return The corresponding deductible factor.
      */
     private double lookupDeductibleFactor(Deductible deductible) {
+        logger.info("Entering lookupDeductibleFactor for deductible={}", deductible);
+
         double factor = switch (deductible) {
             case DED_100 -> 1.50;
             case DED_250 -> 1.25;
             case DED_500 -> 0.95;
             case DED_1000 -> 0.75;
             case DED_2500 -> 0.50;
-            default -> throw new RuntimeException("lookupDeductibleFactor failed!");
+            default -> {
+                logger.error("lookupDeductibleFactor failed for unknown deductible: {}", deductible);
+                throw new RuntimeException("lookupDeductibleFactor failed!");
+            }
         };
-        logger.info("lookupDeductibleFactor factor={}", factor);
+
+        logger.info("Exiting lookupDeductibleFactor with factor={}", factor);
         return factor;
     }
 
@@ -318,16 +314,23 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
      * @return The corresponding limit factor.
      */
     private double lookupLimitFactor(Limit limit) {
+        logger.info("Entering lookupLimitFactor for limit={}", limit);
+
         double factor = switch (limit) {
             case LIM_25 -> 0.8;
             case LIM_50 -> 1.1;
             case LIM_100 -> 2.0;
             case LIM_300 -> 5.0;
-            default -> throw new RuntimeException("lookupLimitFactor failed!");
+            default -> {
+                logger.error("lookupLimitFactor failed for unknown limit: {}", limit);
+                throw new RuntimeException("lookupLimitFactor failed!");
+            }
         };
-        logger.info("lookupLimitFactor factor={}", factor);
+
+        logger.info("Exiting lookupLimitFactor with factor={}", factor);
         return factor;
     }
+
 
     /**
      * Determines the highest driver age factor among all drivers on the policy.
@@ -344,16 +347,19 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
      * @return The highest driver age factor.
      */
     private double lookupHighestDriverAgeFactor(SimpleAuto policy) {
-        double highestDriverAgeFactor = 2.5;
+        logger.info("Entering lookupHighestDriverAgeFactor for policy with {} drivers", policy.drivers().size());
 
-        // Loop through all drivers to find the maximum age factor
+        double highestFactor = 2.5;
+
         for (Driver driver : policy.drivers()) {
             int age = calculateAge(driver);
             double factor = getDriverAgeFactor(age);
-            highestDriverAgeFactor = Math.min(highestDriverAgeFactor, factor);
+            highestFactor = Math.min(highestFactor, factor);
+            logger.info("Driver {} (age={}) has factor={}", driver, age, factor);
         }
 
-        return highestDriverAgeFactor;
+        logger.info("Exiting lookupHighestDriverAgeFactor with highest factor={}", highestFactor);
+        return highestFactor;
     }
 
     /**
@@ -363,7 +369,13 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
      * @return The age in years.
      */
     private int calculateAge(Driver driver) {
-        return Period.between(driver.data().dateOfBirth(), LocalDate.now()).getYears();
+        logger.info("Entering calculateAge for driver: {}", driver);
+
+        LocalDate birthDate = driver.data().dateOfBirth();
+        int age = Period.between(birthDate, LocalDate.now()).getYears();
+
+        logger.info("Exiting calculateAge for driver {} with calculated age={}", driver, age);
+        return age;
     }
 
     /**
@@ -373,16 +385,22 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
      * @return The corresponding age factor.
      */
     private double getDriverAgeFactor(int age) {
+        logger.info("Entering getDriverAgeFactor for age={}", age);
+
+        double factor;
         if (age <= 20) {
-            return 2.5;
+            factor = 2.5;
         } else if (age <= 25) {
-            return 1.75;
+            factor = 1.75;
         } else if (age <= 40) {
-            return 1.10;
+            factor = 1.10;
         } else if (age <= 60) {
-            return 0.75;
+            factor = 0.75;
         } else {
-            return 0.5;
+            factor = 0.5;
         }
+
+        logger.info("Exiting getDriverAgeFactor with factor={}", factor);
+        return factor;
     }
 }
