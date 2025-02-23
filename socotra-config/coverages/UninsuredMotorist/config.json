@@ -1,0 +1,5 @@
+{
+  "extend": "BaseCoverage",
+  "displayName": "Uninsured Motorist (UM)",
+  "coverageTerms": [ "Limit" , "Deductible"]
+}
