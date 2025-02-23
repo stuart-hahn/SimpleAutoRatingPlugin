@@ -130,6 +130,8 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
             * this.lookupHighestDriverAgeFactor(policy)
             * this.lookupLimitFactor(coverage.limit());
 
+        rate /= 12;
+
         RatingItem ratingItem = RatingItem.builder()
             .elementLocator(coverage.locator())
             .chargeType(ChargeType.premium)
@@ -156,6 +158,8 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
             * this.lookupHighestDriverAgeFactor(policy)
             * this.lookupLimitFactor(coverage.limit());
 
+        rate /= 12;
+
         RatingItem ratingItem = RatingItem.builder()
             .elementLocator(coverage.locator())
             .chargeType(ChargeType.premium)
@@ -181,6 +185,8 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
         double rate = this.lookupBaseRate(vehicle)
             * this.lookupHighestDriverAgeFactor(policy)
             * this.lookupDeductibleFactor(coverage.deductible());
+
+        rate /= 12;
 
         RatingItem ratingItem = RatingItem.builder()
             .elementLocator(coverage.locator())
@@ -216,6 +222,8 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
 
         double rate = baseRate * driverAgeFactor * deductibleFactor;
 
+        rate /= 12;
+
         RatingItem ratingItem = RatingItem.builder()
                 .elementLocator(coverage.locator())
                 .chargeType(ChargeType.premium)
@@ -249,6 +257,8 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
         double deductibleFactor = this.lookupDeductibleFactor(coverage.deductible());
 
         double rate = baseRate * driverAgeFactor * limitFactor * deductibleFactor;
+
+        rate /= 12;
 
         RatingItem ratingItem = RatingItem.builder()
                 .elementLocator(coverage.locator())
