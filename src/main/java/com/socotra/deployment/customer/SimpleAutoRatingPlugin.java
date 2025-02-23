@@ -48,7 +48,12 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
         logger.info("rateVehicles vehicles={}", policy.vehicles());
 
         // TODO: Implement applying rateVehicleCoverages() to each vehicle
-        List<RatingItem> allVehicleRates = List.of();
+        List<RatingItem> allVehicleRates = new ArrayList<>();
+
+        // Iterate over all vehicles and apply rating
+        for (Vehicle vehicle : policy.vehicles()) {
+            allVehicleRates.addAll(rateVehicleCoverages(vehicle));
+        }
 
         logger.info("rateVehicles rates={}", allVehicleRates);
         return allVehicleRates;
