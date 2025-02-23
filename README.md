@@ -1,4 +1,4 @@
-# Socotra Solutions Engineer Take Home Project
+# SimpleAuto Rating Plugin
 
 ## Getting Started
 
