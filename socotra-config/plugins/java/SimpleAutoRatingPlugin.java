@@ -130,6 +130,8 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
             * this.lookupHighestDriverAgeFactor(policy)
             * this.lookupLimitFactor(coverage.limit());
 
+        rate /= 12;
+
         RatingItem ratingItem = RatingItem.builder()
             .elementLocator(coverage.locator())
             .chargeType(ChargeType.premium)
@@ -156,6 +158,8 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
             * this.lookupHighestDriverAgeFactor(policy)
             * this.lookupLimitFactor(coverage.limit());
 
+        rate /= 12;
+
         RatingItem ratingItem = RatingItem.builder()
             .elementLocator(coverage.locator())
             .chargeType(ChargeType.premium)
@@ -181,6 +185,8 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
         double rate = this.lookupBaseRate(vehicle)
             * this.lookupHighestDriverAgeFactor(policy)
             * this.lookupDeductibleFactor(coverage.deductible());
+
+        rate /= 12;
 
         RatingItem ratingItem = RatingItem.builder()
             .elementLocator(coverage.locator())
@@ -216,6 +222,8 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
 
         double rate = baseRate * driverAgeFactor * deductibleFactor;
 
+        rate /= 12;
+
         RatingItem ratingItem = RatingItem.builder()
                 .elementLocator(coverage.locator())
                 .chargeType(ChargeType.premium)
@@ -249,6 +257,8 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
         double deductibleFactor = this.lookupDeductibleFactor(coverage.deductible());
 
         double rate = baseRate * driverAgeFactor * limitFactor * deductibleFactor;
+
+        rate /= 12;
 
         RatingItem ratingItem = RatingItem.builder()
                 .elementLocator(coverage.locator())
@@ -334,16 +344,16 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
      * @return The highest driver age factor.
      */
     private double lookupHighestDriverAgeFactor(SimpleAuto policy) {
-        double highestFactor = 0.0;
+        double highestDriverAgeFactor = 2.5;
 
         // Loop through all drivers to find the maximum age factor
         for (Driver driver : policy.drivers()) {
             int age = calculateAge(driver);
             double factor = getDriverAgeFactor(age);
-            highestFactor = Math.max(highestFactor, factor);
+            highestDriverAgeFactor = Math.min(highestDriverAgeFactor, factor);
         }
 
-        return highestFactor;
+        return highestDriverAgeFactor;
     }
 
     /**
