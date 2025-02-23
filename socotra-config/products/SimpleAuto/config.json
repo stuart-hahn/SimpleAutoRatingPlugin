@@ -1,0 +1,16 @@
+{
+    "displayName": "Simple Auto",
+    "eligibleAccountTypes": [
+        "SimpleAccount"
+    ],
+    "contents": [
+        "Driver+",
+        "Vehicle+"
+    ],
+    "data": {
+        "policyAddress": {
+            "displayName": "Policy Address",
+            "type": "Address"
+        }
+    }
+}

@@ -1,0 +1,29 @@
+{
+    "displayName": "Driver",
+    "data": {
+        "firstName": {
+            "displayName": "First Name",
+            "type": "string"
+        },
+        "lastName": {
+            "displayName": "Last Name",
+            "type": "string"
+        },
+        "address": {
+            "displayName": "Address",
+            "type": "Address?"
+        },
+        "dateOfBirth": {
+            "displayName": "Date of Birth",
+            "type": "date"
+        },
+        "licenseState": {
+            "displayName": "License State",
+            "type": "string?"
+        },
+        "licenseNumber": {
+            "displayName": "License Number",
+            "type": "string?"
+        }
+    }
+}

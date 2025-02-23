@@ -1,0 +1,22 @@
+{
+    "type": "limit",
+    "displayName": "Limit",
+    "options": {
+        "*LIM_25": {
+            "displayName": "$25,000",
+            "value": 25000
+        },
+        "LIM_50": {
+            "displayName": "$50,000",
+            "value": 50000
+        },
+        "LIM_100": {
+            "displayName": "$100,000",
+            "value": 100000
+        },
+        "LIM_300": {
+            "displayName": "$300,000",
+            "value": 300000
+        }
+    }
+}

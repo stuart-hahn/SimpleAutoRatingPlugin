@@ -1,0 +1,5 @@
+{
+    "extend": "BaseCoverage",
+    "displayName": "Property Damage Liability (PD)",
+    "coverageTerms": [ "Limit" ]
+}

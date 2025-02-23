@@ -1,0 +1,48 @@
+{
+    "contents": [
+        "BodilyInjury",
+        "PropertyDamage",
+        "Collision?",
+        "Comprehensive?"
+    ],
+    "data": {
+        "vehicleType": {
+            "displayName": "Vehicle Type",
+            "type": "string",
+            "options": [
+                "Car",
+                "Truck",
+                "Motorcycle"
+            ]
+        },
+        "vin": {
+            "displayName": "Vehicle Identification Number (VIN)",
+            "type": "string?",
+            "regex": "[A-HJ-NPR-Z0-9]{17}"
+        },
+        "make": {
+            "displayName": "Vehicle Make",
+            "type": "string"
+        },
+        "model": {
+            "displayName": "Vehicle Model",
+            "type": "string"
+        },
+        "year": {
+            "displayName": "Vehicle Year",
+            "type": "int",
+            "min": 1900,
+            "max": 2025
+        },
+        "value": {
+            "displayName": "Value",
+            "type": "decimal",
+            "min": 500,
+            "max": 100000
+        },
+        "garagingAddress": {
+            "displayName": "Garaging Address",
+            "type": "Address?"
+        }
+    }
+}

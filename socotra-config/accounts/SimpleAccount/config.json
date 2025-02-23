@@ -1,0 +1,9 @@
+{
+    "displayName": "Simple Account",
+    "data": {
+        "name": {
+            "displayName": "Name",
+            "type": "string"
+        }
+    }
+}

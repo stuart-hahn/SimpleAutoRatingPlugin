@@ -1,0 +1,5 @@
+{
+    "extend": "BaseCoverage",
+    "displayName": "Collision (COLL)",
+    "coverageTerms": [ "Deductible" ]
+}

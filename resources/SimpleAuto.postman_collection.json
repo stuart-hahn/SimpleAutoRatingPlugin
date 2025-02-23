@@ -1,0 +1,337 @@
+{
+	"info": {
+		"_postman_id": "9f4777a9-51ab-46b0-be12-3cf62534627d",
+		"name": "SimpleAuto",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19547243"
+	},
+	"item": [
+		{
+			"name": "Create Account",
+			"item": [
+				{
+					"name": "Create account",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"pm.environment.set(\"accountLocator\", jsonData.locator);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"SimpleAccount\",\n    \"data\": {\n        \"name\": \"Test Account\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{API_URL}}policy/{{tenantLocator}}/accounts",
+							"host": [
+								"{{API_URL}}policy"
+							],
+							"path": [
+								"{{tenantLocator}}",
+								"accounts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Validate account",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}policy/{{tenantLocator}}/accounts/{{accountLocator}}/validate",
+							"host": [
+								"{{API_URL}}policy"
+							],
+							"path": [
+								"{{tenantLocator}}",
+								"accounts",
+								"{{accountLocator}}",
+								"validate"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Create Quote",
+			"item": [
+				{
+					"name": "Create simple quote",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"pm.environment.set(\"quoteLocator\", jsonData.locator);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    // Required Quote data:\n    \"productName\": \"SimpleAuto\",\n    \"startTime\": \"2025-01-01T00:00:00+0000\",    \n    \"accountLocator\": \"{{accountLocator}}\", // set by Create Account, must be validated\n\n    // Policy-Level Data Fields\n    \"data\": {\n        \"policyAddress\": {\n            \"line1\": \"123 Fake St\",\n            \"city\": \"Fakeville\",\n            \"state\": \"IL\",\n            \"zip\": \"55555\"\n        }\n    },\n\n    // Sub-Elements:\n    \"elements\": [\n        // Drivers\n        {\n            \"type\": \"Driver\",\n            \"data\": {\n                \"firstName\": \"Sleve\",\n                \"lastName\": \"McDichael\",\n                \"dateOfBirth\": \"1980-01-01\",\n                \"licenseState\": \"IL\",\n                \"licenseNumber\": \"123456789\"\n            }\n        },\n\n        // Vehicles\n        {\n            \"type\": \"Vehicle\",\n            \"data\": {\n                \"vehicleType\": \"Car\",\n                \"vin\": \"4T1BG12K8TU673569\",\n                \"make\": \"Some\",\n                \"model\": \"Car\",\n                \"year\": 2020,\n                \"value\": 10000\n            },\n\n            // Per-vehicle coverages\n            \"elements\": [\n                // Required coverages\n                {\n                    \"type\": \"BodilyInjury\",\n                    \"coverageTerms\": {\n                        \"Limit\": \"LIM_25\"\n                    }\n                },\n                {\n                    \"type\": \"PropertyDamage\",\n                    \"coverageTerms\": {\n                        \"Limit\": \"LIM_50\"\n                    }\n                }\n            ]\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{API_URL}}policy/{{tenantLocator}}/quotes",
+							"host": [
+								"{{API_URL}}policy"
+							],
+							"path": [
+								"{{tenantLocator}}",
+								"quotes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create complex quote",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"pm.environment.set(\"quoteLocator\", jsonData.locator);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"productName\": \"SimpleAuto\",\n    \"startTime\": \"2025-01-01T00:00:00+0000\",\n    \"accountLocator\": \"{{accountLocator}}\",\n    \"data\": {\n        \"policyAddress\": {\n            \"line1\": \"123 Fake St\",\n            \"city\": \"Fakeville\",\n            \"state\": \"IL\",\n            \"zip\": \"55555\"\n        }\n    },\n    \"elements\": [\n        {\n            \"type\": \"Driver\",\n            \"data\": {\n                \"firstName\": \"Sleve\",\n                \"lastName\": \"McDichael\",\n                \"dateOfBirth\": \"1980-01-01\",\n                \"licenseState\": \"IL\",\n                \"licenseNumber\": \"123456789\"\n            }\n        },\n        {\n            \"type\": \"Driver\",\n            \"data\": {\n                \"firstName\": \"Driver\",\n                \"lastName\": \"Number2\",\n                \"dateOfBirth\": \"1980-01-01\",\n                \"licenseState\": \"IL\",\n                \"licenseNumber\": \"123456789\"\n            }\n        },\n        {\n            \"type\": \"Vehicle\",\n            \"data\": {\n                \"vehicleType\": \"Car\",\n                \"vin\": \"4T1BG12K8TU673569\",\n                \"make\": \"Some\",\n                \"model\": \"Car\",\n                \"year\": 2020,\n                \"value\": 10000\n            },\n            \"elements\": [\n                // Required coverages\n                {\n                    \"type\": \"BodilyInjury\",\n                    \"coverageTerms\": {\n                        \"Limit\": \"LIM_25\"\n                    }\n                },\n                {\n                    \"type\": \"PropertyDamage\",\n                    \"coverageTerms\": {\n                        \"Limit\": \"LIM_50\"\n                    }\n                },\n                // Optional coverages\n                {\n                    \"type\": \"Comprehensive\",\n                    \"coverageTerms\": {\n                        \"Deductible\": \"DED_500\"\n                    }\n                },\n                {\n                    \"type\": \"Collision\",\n                    \"coverageTerms\": {\n                        \"Deductible\": \"DED_500\"\n                    }\n                }\n            ]\n        },\n        {\n            \"type\": \"Vehicle\",\n            \"data\": {\n                \"vehicleType\": \"Car\",\n                \"vin\": \"JH4DC2383WS800079\",\n                \"make\": \"Other\",\n                \"model\": \"Car\",\n                \"year\": 2025,\n                \"value\": 20000\n            },\n            \"elements\": [\n                {\n                    \"type\": \"BodilyInjury\",\n                    \"coverageTerms\": {\n                        \"Limit\": \"LIM_50\"\n                    }\n                },\n                {\n                    \"type\": \"PropertyDamage\",\n                    \"coverageTerms\": {\n                        \"Limit\": \"LIM_100\"\n                    }\n                },\n                {\n                    \"type\": \"Comprehensive\",\n                    \"coverageTerms\": {\n                        \"Deductible\": \"DED_250\"\n                    }\n                },\n                {\n                    \"type\": \"Collision\",\n                    \"coverageTerms\": {\n                        \"Deductible\": \"DED_100\"\n                    }\n                }\n            ]\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{API_URL}}policy/{{tenantLocator}}/quotes",
+							"host": [
+								"{{API_URL}}policy"
+							],
+							"path": [
+								"{{tenantLocator}}",
+								"quotes"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Issue Quote",
+			"item": [
+				{
+					"name": "Validate Quote",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}policy/{{tenantLocator}}/quotes/{{quoteLocator}}/validate",
+							"host": [
+								"{{API_URL}}policy"
+							],
+							"path": [
+								"{{tenantLocator}}",
+								"quotes",
+								"{{quoteLocator}}",
+								"validate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Price Quote",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}policy/{{tenantLocator}}/quotes/{{quoteLocator}}/price",
+							"host": [
+								"{{API_URL}}policy"
+							],
+							"path": [
+								"{{tenantLocator}}",
+								"quotes",
+								"{{quoteLocator}}",
+								"price"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Troubleshoot",
+			"item": [
+				{
+					"name": "Search Logs by requestId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"pm.environment.set(\"logLocator\", jsonData[0].locator);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}plugin/{{tenantLocator}}/logs/list?requestId={{lastRequestId}}",
+							"host": [
+								"{{API_URL}}plugin"
+							],
+							"path": [
+								"{{tenantLocator}}",
+								"logs",
+								"list"
+							],
+							"query": [
+								{
+									"key": "requestId",
+									"value": "{{lastRequestId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Log Contents",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept-Encoding",
+								"value": "application/gzip",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}plugin/{{tenantLocator}}/logs/{{logLocator}}",
+							"host": [
+								"{{API_URL}}plugin"
+							],
+							"path": [
+								"{{tenantLocator}}",
+								"logs",
+								"{{logLocator}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{personalAccessToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"pm.environment.set(\"lastRequestId\", pm.response.headers.get(\"socotra-request-id\"));"
+				]
+			}
+		}
+	]
+}

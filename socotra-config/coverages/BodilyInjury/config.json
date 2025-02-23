@@ -1,0 +1,5 @@
+{
+    "extend": "BaseCoverage",
+    "displayName": "Bodily Injury Liability (BI)",
+    "coverageTerms": [ "Limit" ]
+}
