@@ -40,19 +40,23 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
 
 
 
-/**
- * VEHICLE RATING:
- */
+    // =============================
+    // VEHICLE RATING METHODS
+    // =============================
+
     /**
-     * Calculates rates for all Vehicles for a Quote/Segment object
+     * Calculates rates for all vehicles within the given policy.
+     *
+     * @param policy The auto policy containing vehicles.
+     * @return A list of RatingItem objects for each vehicle's coverages.
      */
     private List<RatingItem> rateVehicles(SimpleAuto policy) {
         logger.info("rateVehicles vehicles={}", policy.vehicles());
 
-        // TODO: Implement applying rateVehicleCoverages() to each vehicle
+        // List to hold all rating items from all vehicles
         List<RatingItem> allVehicleRates = new ArrayList<>();
 
-        // Iterate over all vehicles and apply rating
+        // Iterate over each vehicle and accumulate its coverage ratings
         for (Vehicle vehicle : policy.vehicles()) {
             allVehicleRates.addAll(rateVehicleCoverages(vehicle, policy));
         }
@@ -62,26 +66,33 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
     }
 
     /**
-     * Calculates rates for all of a Vehicle's coverages
+     * Calculates rates for each coverage available on a vehicle.
+     *
+     * @param vehicle The vehicle whose coverages are being rated.
+     * @param policy  The policy context (includes drivers and other details).
+     * @return A list of RatingItem objects representing the vehicle's coverages.
      */
     private List<RatingItem> rateVehicleCoverages(Vehicle vehicle, SimpleAuto policy) {
         logger.info("rateVehicleCoverages vehicle={}", vehicle);
 
+        // List to hold rating items for each coverage on the vehicle
         List<RatingItem> coverageRates = new ArrayList<>();
 
-        // Required Coverages:
+        // Required Coverages: Bodily Injury and Property Damage
         coverageRates.add(this.rateBodilyInjury(vehicle, vehicle.bodilyInjury(), policy));
         coverageRates.add(this.ratePropertyDamage(vehicle, vehicle.propertyDamage(), policy));
 
-        // Optional Coverages:
+        // Optional Coverage: Collision
         if (vehicle.collision() != null) {
             coverageRates.add(this.rateCollision(vehicle, vehicle.collision(), policy));
         }
-        // TODO: Implement rateComprehensive() when applicable
+
+        // Optional Coverage: Comprehensive
         if (vehicle.comprehensive() != null) {
             coverageRates.add(this.rateComprehensive(vehicle, vehicle.comprehensive(), policy));
         }
 
+        // Optional Coverage: Uninsured Motorist
         if (vehicle.uninsuredMotorist() != null) {
             coverageRates.add(this.rateUninsuredMotorist(vehicle, vehicle.uninsuredMotorist(), policy));
         }
@@ -91,6 +102,9 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
     }
 
 
+    // =============================
+    // COVERAGE RATING METHODS
+    // =============================
 
 /**
  * COVERAGE RATING:
@@ -99,8 +113,15 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
  * of factors: HighestDriverFactor determined by driver age, and limit and deductible factors
  * determined by the coverageTerms available on that particular coverage.
  */
-    /** Calculate rate for BodilyInjury coverage as
-     * = BaseRate * DriverAgeFactor * LimitFactor
+
+    /**
+     * Calculates rate for Bodily Injury coverage.
+     * Formula: BaseRate * DriverAgeFactor * LimitFactor
+     *
+     * @param vehicle  The vehicle being rated.
+     * @param coverage The Bodily Injury coverage details.
+     * @param policy   The policy context (driver details, etc.).
+     * @return A RatingItem for the Bodily Injury coverage.
      */
     private RatingItem rateBodilyInjury(Vehicle vehicle, BodilyInjury coverage, SimpleAuto policy) {
         logger.info("rateBodilyInjury coverage={}", coverage);
@@ -120,8 +141,13 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
     }
 
     /**
-     * Calculate rate for PropertyDamage coverage as
-     * = BaseRate * DriverAgeFactor * LimitFactor
+     * Calculates rate for Property Damage coverage.
+     * Formula: BaseRate * DriverAgeFactor * LimitFactor
+     *
+     * @param vehicle  The vehicle being rated.
+     * @param coverage The Property Damage coverage details.
+     * @param policy   The policy context (driver details, etc.).
+     * @return A RatingItem for the Property Damage coverage.
      */
     private RatingItem ratePropertyDamage(Vehicle vehicle, PropertyDamage coverage, SimpleAuto policy) {
         logger.info("ratePropertyDamage coverage={}", coverage);
@@ -141,8 +167,13 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
     }
 
     /**
-     * Calculate rate for Collision coverage as
-     * = BaseRate * DriverAgeFactor * DeductibleFactor
+     * Calculates rate for Collision coverage.
+     * Formula: BaseRate * DriverAgeFactor * DeductibleFactor
+     *
+     * @param vehicle  The vehicle being rated.
+     * @param coverage The Collision coverage details.
+     * @param policy   The policy context (driver details, etc.).
+     * @return A RatingItem for the Collision coverage.
      */
     private RatingItem rateCollision(Vehicle vehicle, Collision coverage, SimpleAuto policy) {
         logger.info("rateCollision coverage={}", coverage);
@@ -162,12 +193,16 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
     }
 
     /**
-     * Calculate rate for Comprehensive coverage as
-     * = BaseRate * DriverAgeFactor * DeductibleFactor
+     * Calculates rate for Comprehensive coverage.
+     * Formula: BaseRate * DriverAgeFactor * DeductibleFactor
+     *
+     * @param vehicle  The vehicle being rated.
+     * @param coverage The Comprehensive coverage details.
+     * @param policy   The policy context (driver details, etc.).
+     * @return A RatingItem for the Comprehensive coverage, or null if coverage is null.
      */
     private RatingItem rateComprehensive(Vehicle vehicle, Comprehensive coverage, SimpleAuto policy) {
-        // TODO: Implement rateComprehensive() with above formula
-//        throw new RuntimeException("Not implemented!");
+        // If the coverage is null, log a warning and return null.
         if (coverage == null) {
             logger.warn("rateComprehensive called with null coverage for vehicle: {}", vehicle);
             return null;
@@ -191,10 +226,16 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
     }
 
     /**
-     * Calculate rate for UninsuredMotorist coverage as
-     * = BaseRate * DriverAgeFactor * LimitFactor * DeductibleFactor
+     * Calculates rate for Uninsured Motorist coverage.
+     * Formula: BaseRate * DriverAgeFactor * LimitFactor * DeductibleFactor
+     *
+     * @param vehicle  The vehicle being rated.
+     * @param coverage The Uninsured Motorist coverage details.
+     * @param policy   The policy context (driver details, etc.).
+     * @return A RatingItem for the Uninsured Motorist coverage, or null if coverage is null.
      */
     private RatingItem rateUninsuredMotorist(Vehicle vehicle, UninsuredMotorist coverage, SimpleAuto policy) {
+        // If the coverage is null, log a warning and return null.
         if (coverage == null) {
             logger.warn("rateUninsuredMotorist called with null coverage for vehicle: {}", vehicle);
             return null;
@@ -219,16 +260,20 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
         return ratingItem;
     }
 
-/**
- * LOOKUP TABLES:
- *
- * In-code implementation of simple lookups
- */
+
+    // =============================
+    // LOOKUP TABLE METHODS
+    // =============================
+
     /**
-     * Lookup BaseRate for a Vehicle by type
+     * Looks up the base rate for a vehicle based on its type.
+     *
+     * @param vehicle The vehicle to lookup.
+     * @return The base rate as a double.
      */
     private double lookupBaseRate(Vehicle vehicle) {
         double baseRate = switch (vehicle.data().vehicleType()) {
+            case "Motorcycle" -> 300.0;
             case "Car" -> 500.0;
             case "Truck" -> 750.0;
             default -> throw new RuntimeException("lookupBaseRate failed!");
@@ -238,7 +283,10 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
     }
 
     /**
-     * Lookup DeductibleFactor by coverage deductible
+     * Looks up the deductible factor for a given deductible value.
+     *
+     * @param deductible The deductible from the coverage.
+     * @return The corresponding deductible factor.
      */
     private double lookupDeductibleFactor(Deductible deductible) {
         double factor = switch (deductible) {
@@ -254,7 +302,10 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
     }
 
     /**
-     * Lookup LimitFactor by coverage limit
+     * Looks up the limit factor for a given coverage limit.
+     *
+     * @param limit The coverage limit.
+     * @return The corresponding limit factor.
      */
     private double lookupLimitFactor(Limit limit) {
         double factor = switch (limit) {
@@ -269,16 +320,23 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
     }
 
     /**
-     * Lookup DriverAgeFactor by driver age
+     * Determines the highest driver age factor among all drivers on the policy.
+     * The highest factor is used to adjust the rate.
+     *
+     * Age to Factor Mapping:
+     *   - Age <= 20  => 2.50
+     *   - Age 21-25  => 1.75
+     *   - Age 26-40  => 1.10
+     *   - Age 41-60  => 0.75
+     *   - Age > 60   => 0.50
+     *
+     * @param policy The auto policy containing drivers.
+     * @return The highest driver age factor.
      */
     private double lookupHighestDriverAgeFactor(SimpleAuto policy) {
-
-        // for every driver on the policy, get their age
-        // take the factor that corresponds with the lowest age
-        // if the factor is higher than the highest factor, update the highestFactor
-
         double highestFactor = 0.0;
 
+        // Loop through all drivers to find the maximum age factor
         for (Driver driver : policy.drivers()) {
             int age = calculateAge(driver);
             double factor = getDriverAgeFactor(age);
@@ -286,24 +344,24 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
         }
 
         return highestFactor;
-        // TODO: Implement lookup for driver age factor
-        // and return the *highest* factor of any driver on the policy
-        // ex: if a quote has DriverA=22 and DriverB=41, return 1.75
-
-        // Age   => Factor
-        // < 20  => 2.50
-        // 21-25 => 1.75
-        // 26-40 => 1.10
-        // 41-60 => 0.75
-        // 61+   => 0.50
-
-//        throw new RuntimeException("Not implemented!");
     }
 
+    /**
+     * Calculates the age of a driver based on their date of birth.
+     *
+     * @param driver The driver whose age is to be calculated.
+     * @return The age in years.
+     */
     private int calculateAge(Driver driver) {
         return Period.between(driver.data().dateOfBirth(), LocalDate.now()).getYears();
     }
 
+    /**
+     * Returns the driver age factor based on the driver's age.
+     *
+     * @param age The age of the driver.
+     * @return The corresponding age factor.
+     */
     private double getDriverAgeFactor(int age) {
         if (age <= 20) {
             return 2.5;
