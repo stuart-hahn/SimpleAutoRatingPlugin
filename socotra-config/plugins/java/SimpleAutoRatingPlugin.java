@@ -30,9 +30,9 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
         logger.info("quote={}", quote);
 
         RatingSet ratingSet = RatingSet.builder()
-            .ok(true)
-            .addRatingItems(this.rateVehicles(quote))
-            .build();
+                .ok(true)
+                .addRatingItems(this.rateVehicles(quote))
+                .build();
 
         logger.info("ratingSet={}", ratingSet);
         return ratingSet;
@@ -123,7 +123,7 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
         double driverFactor = this.lookupHighestDriverAgeFactor(policy);
         double limitFactor = this.lookupLimitFactor(coverage.limit());
 
-        double rate = (baseRate * driverFactor * limitFactor) / 12;
+        double rate = (baseRate * driverFactor * limitFactor);
 
         RatingItem ratingItem = RatingItem.builder()
                 .elementLocator(coverage.locator())
@@ -151,7 +151,7 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
         double driverFactor = this.lookupHighestDriverAgeFactor(policy);
         double limitFactor = this.lookupLimitFactor(coverage.limit());
 
-        double rate = (baseRate * driverFactor * limitFactor) / 12;
+        double rate = (baseRate * driverFactor * limitFactor);
 
         RatingItem ratingItem = RatingItem.builder()
                 .elementLocator(coverage.locator())
@@ -179,7 +179,7 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
         double driverFactor = this.lookupHighestDriverAgeFactor(policy);
         double deductibleFactor = this.lookupDeductibleFactor(coverage.deductible());
 
-        double rate = (baseRate * driverFactor * deductibleFactor) / 12;
+        double rate = (baseRate * driverFactor * deductibleFactor);
 
         RatingItem ratingItem = RatingItem.builder()
                 .elementLocator(coverage.locator())
@@ -212,7 +212,7 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
         double driverFactor = this.lookupHighestDriverAgeFactor(policy);
         double deductibleFactor = this.lookupDeductibleFactor(coverage.deductible());
 
-        double rate = (baseRate * driverFactor * deductibleFactor) / 12;
+        double rate = (baseRate * driverFactor * deductibleFactor);
 
         RatingItem ratingItem = RatingItem.builder()
                 .elementLocator(coverage.locator())
@@ -246,7 +246,7 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
         double limitFactor = this.lookupLimitFactor(coverage.limit());
         double deductibleFactor = this.lookupDeductibleFactor(coverage.deductible());
 
-        double rate = (baseRate * driverFactor * limitFactor * deductibleFactor) / 12;
+        double rate = (baseRate * driverFactor * limitFactor * deductibleFactor);
 
         RatingItem ratingItem = RatingItem.builder()
                 .elementLocator(coverage.locator())
