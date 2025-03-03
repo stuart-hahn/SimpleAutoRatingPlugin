@@ -38,8 +38,6 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
         return ratingSet;
     }
 
-
-
     // =============================
     // VEHICLE RATING METHODS
     // =============================
@@ -349,17 +347,20 @@ public class SimpleAutoRatingPlugin implements RatePlugin {
     private double lookupHighestDriverAgeFactor(SimpleAuto policy) {
         logger.info("Entering lookupHighestDriverAgeFactor for policy with {} drivers", policy.drivers().size());
 
-        double highestFactor = 2.5;
+        double highestDriverAgeFactor = 0.5;
 
         for (Driver driver : policy.drivers()) {
             int age = calculateAge(driver);
             double factor = getDriverAgeFactor(age);
-            highestFactor = Math.min(highestFactor, factor);
+            highestDriverAgeFactor = Math.max(highestDriverAgeFactor, factor);
+            if (highestDriverAgeFactor == 2.5) {
+                return highestDriverAgeFactor;
+            }
             logger.info("Driver {} (age={}) has factor={}", driver, age, factor);
         }
 
-        logger.info("Exiting lookupHighestDriverAgeFactor with highest factor={}", highestFactor);
-        return highestFactor;
+        logger.info("Exiting lookupHighestDriverAgeFactor with highest factor={}", highestDriverAgeFactor);
+        return highestDriverAgeFactor;
     }
 
     /**
